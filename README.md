@@ -6,7 +6,7 @@ The Travel Buddy Matching Backend is the server-side component of a web applicat
 
 ## Live URL
 
-You can access the live version of the backend application at [here](#)..
+You can access the live version of the backend application at [here]()..
 
 ## Features
 
@@ -108,9 +108,39 @@ Retrieve paginated and filtered trips based on query parameters such as destinat
 
 - Endpoint: GET /api/trips
 
+### Get A Trip By ID
+
+Retrieve a trip with the ID: `tripId`.
+
+- Endpoint: GET /api/trips/:tripId
+
+### Delete A Trip By ID
+
+Delete a trip with the ID: `tripId`. A super-admin, admin or the user who created the trip can delete the trip.
+
+- Endpoint: GET /api/trips/:tripId
+- Request Headers:
+  - Authorization: <JWT_TOKEN>
+
+### Get All The Requested Trips For a Logged In User
+
+Retrieve all trips that are requested to join by a user .
+
+- Endpoint: GET /api/trips/my-requested-trips
+- Request Headers:
+  - Authorization: <JWT_TOKEN>
+
+### Get All The Trips Created By A User
+
+Retrieve all trips that are posted/created by a user .
+
+- Endpoint: GET /api/trips/my-posted-trips
+- Request Headers:
+  - Authorization: <JWT_TOKEN>
+
 ### Send Travel Buddy Request
 
-Send a travel buddy request for a specific trip with the ID `:tripId`.
+Send a travel buddy request for a specific trip with the ID `tripId`.
 
 - Endpoint: POST /api/trip/:tripId/request
 - Request Headers:
@@ -157,7 +187,7 @@ Retrieve the user's profile information.
 
 ### Update User Profile
 
-Update the user's profile information with the provided name and email.
+Update the user's profile information.
 
 - Endpoint: PUT /api/profile
 - Request Headers:
@@ -167,7 +197,26 @@ Update the user's profile information with the provided name and email.
 ```TS
 {
     "name": "John Cena",
-    "email": "john.doe@example.com"
+    "email": "john.doe@example.com",
+    "profile": {
+        "bio": "xyz",
+        "age": 30
+    }
+}
+```
+
+### Update User Role
+
+Update the user's role. Only Admin or Super Admin can change user role
+
+- Endpoint: PUT /api/profile
+- Request Headers:
+  - Authorization: <JWT_TOKEN>
+- Request Body:
+
+```TS
+{
+    "role": "ADMIN"
 }
 ```
 

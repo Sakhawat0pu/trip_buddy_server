@@ -9,16 +9,12 @@ import { upload } from "../../utils/uploadImageToCloudinary";
 const router = express.Router();
 
 // GET endpoint for retrieving all trips
-router.get(
-	"/",
-	auth(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.TRAVELER),
-	tripController.getAllTrips
-);
+router.get("/", tripController.getAllTrips);
 
 // GET endpoint for retrieving a trip by id
 router.get(
 	"/:tripId",
-	auth(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.TRAVELER),
+	// auth(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.TRAVELER),
 	tripController.getSingleTrip
 );
 
