@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Trip" ALTER COLUMN "description" DROP NOT NULL,
+ALTER COLUMN "photos" SET DEFAULT ARRAY[]::TEXT[];

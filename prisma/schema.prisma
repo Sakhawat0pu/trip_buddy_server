@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  TRAVELER
+}
+
+enum UserStatus {
+  ACTIVE
+  BLOCKED
+  DELETED
+}
+
+model User {
+  id               String             @id @default(uuid())
+  name             String
+  email            String             @unique
+  role             UserRole           @default(TRAVELER)
+  password         String
+  status           UserStatus         @default(ACTIVE)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  userProfile      UserProfile?
+  trip             Trip[]
+  tripBuddyRequest TripBuddyRequest[]
+}
+
+model UserProfile {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  bio       String
+  age       Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Trip {
+  id               String             @id @default(uuid())
+  userId           String
+  destination      String
+  tripType         String
+  description      String?
+  photos           String[]           @default([])
+  startDate        String
+  endDate          String
+  budget           Int
+  activities       String[]
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  user             User               @relation(fields: [userId], references: [id])
+  tripBuddyRequest TripBuddyRequest[]
+}
+
+model TripBuddyRequest {
+  id                       String        @id @default(uuid())
+  tripId                   String
+  userId                   String
+  requesterName            String
+  requesterContactNo       String
+  requesterEmail           String
+  requesterAccomPreference String?
+  message                  String?
+  status                   RequestStatus @default(PENDING)
+  createdAt                DateTime      @default(now())
+  updatedAt                DateTime      @updatedAt
+  user                     User          @relation(fields: [userId], references: [id])
+  trip                     Trip          @relation(fields: [tripId], references: [id])
+}
