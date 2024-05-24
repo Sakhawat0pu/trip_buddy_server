@@ -20,17 +20,17 @@ You can access the live version of the backend application at [here]()..
 
 The backend of the Travel Buddy Matching Application is built using the following technologies:
 
-- Programming Language: TypeScript
-- Web Framework: Express.js
-- Object Relational Mapping (ORM): Prisma with PostgreSQL
-- Authentication: JWT (JSON Web Tokens)
+- Programming Language: `TypeScript`
+- Web Framework: `Express.js`
+- Object Relational Mapping (ORM): `Prisma with PostgreSQL`
+- Authentication: `JWT (JSON Web Tokens)`
 
 ## Setup Instructions
 
-1. Clone the repository to your local machine : `git clone https://github.com/Apollo-Level2-Web-Dev/L2-B2-Assignment-8-Full-stack.git`
-2. Go to the project directory: `cd L2-B2-Assignment-8-Full-stack.`
+1. Clone the repository to your local machine : `https://github.com/Sakhawat0pu/trip_buddy_server.git`
+2. Go to the project directory: `cd trip_buddy_server`
 3. Install dependencies using `npm install`.
-4. Add a .env file in the root directory
+4. Add a .env file in the root directory with following environment variables
 
 ```TS
 DATABASE_URL=
@@ -41,6 +41,15 @@ JWT_ACCESS_SECRET=
 JWT_REFRESH_SECRET=
 JWT_ACCESS_TOKEN_EXPIRES_IN=
 JWT_REFRESH_TOKEN_EXPIRES_IN=
+RESET_PASSWORD_TOKEN_EXPIRES_IN=10m
+FRONTEND_BASE_URI=
+EMAIL_ADDRESS=
+APP_PASS=
+SUPER_ADMIN_PASSWORD=
+SUPER_ADMIN_EMAIL_ADDRESS==
+SUPER_ADMIN_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
 ```
 
 5. Set up a PostgreSQL database and configure the connection in the Prisma schema.
