@@ -20,10 +20,10 @@ You can access the live version of the backend application at [here]()..
 
 The backend of the Travel Buddy Matching Application is built using the following technologies:
 
-- Programming Language: `TypeScript`
-- Web Framework: `Express.js`
-- Object Relational Mapping (ORM): `Prisma with PostgreSQL`
-- Authentication: `JWT (JSON Web Tokens)`
+- **Programming Language:** `TypeScript`
+- **Web Framework:** `Express.js`
+- **Object Relational Mapping (ORM):** `Prisma with PostgreSQL`
+- **Authentication:** `JWT (JSON Web Tokens)`
 
 ## Setup Instructions
 
@@ -63,18 +63,18 @@ CLOUDINARY_API_SECRET=
 
 Register a new user with the provided name, email, and password. Returns the registered user details without the password.
 
-- Endpoint: POST /api/register
-- Request Body:
+- **Endpoint:** `POST /api/register`
+- **Request Body:**
 
-```TS
+```json
 {
-    "name": "John Doe",
-    "email": "john@example.com",
-    "password": "password",
-    "profile": {
-        "bio": "Passionate about helping people find their lost items.",
-        "age": 30
-		}
+	"name": "John Doe",
+	"email": "john@example.com",
+	"password": "password",
+	"profile": {
+		"bio": "Passionate about helping people find their lost items.",
+		"age": 30
+	}
 }
 ```
 
@@ -82,32 +82,39 @@ Register a new user with the provided name, email, and password. Returns the reg
 
 Authenticate a user with the provided email and password. Returns a JWT token for further authentication.
 
-- Endpoint: POST /api/login
-- Request Body:
+- **Endpoint:** `POST /api/login`
+- **Request Body:**
 
-```TS
+```json
 {
-    "email": "john@example.com",
-    "password": "password"
+	"email": "john@example.com",
+	"password": "password"
 }
 ```
 
 ### Create a Trip
 
-Create a new trip with the provided destination, start date, end date, budget, and activities.
+Create a new trip with the provided destination, start date, end date, budget, activities, and photos.
 
-- Endpoint: POST /api/trips
-- Request Headers:
-  - Authorization: <JWT_TOKEN>
-- Request Body:
+- **Endpoint**: `POST /api/trips`
+- **Request Headers**:
+  - `Authorization`: `<JWT_TOKEN>`
+  - `Content-Type`: `multipart/form-data`
+- **Request Body**:
 
-```TS
+  - The request body should be sent as `multipart/form-data`.
+  - There will be two fields in the form data:
+
+    - `files`: An array of photos.
+    - `data`: JSON string containing the trip details.
+
+```json
 {
-    "destination": "Paris, France",
-    "startDate": "2024-06-01",
-    "endDate": "2024-06-07",
-    "budget": 1500,
-    "activities": ["Eiffel Tower visit", "Louvre Museum tour"],
+	"destination": "Paris, France",
+	"startDate": "2024-06-01",
+	"endDate": "2024-06-07",
+	"budget": 1500,
+	"activities": ["Eiffel Tower visit", "Louvre Museum tour"]
 }
 ```
 
@@ -115,50 +122,50 @@ Create a new trip with the provided destination, start date, end date, budget, a
 
 Retrieve paginated and filtered trips based on query parameters such as destination, start date, end date, maxBudget, minBudget etc.
 
-- Endpoint: GET /api/trips
+- **Endpoint:** `GET /api/trips`
 
 ### Get A Trip By ID
 
 Retrieve a trip with the ID: `tripId`.
 
-- Endpoint: GET /api/trips/:tripId
+- **Endpoint:** `GET /api/trips/:tripId`
 
 ### Delete A Trip By ID
 
 Delete a trip with the ID: `tripId`. A super-admin, admin or the user who created the trip can delete the trip.
 
-- Endpoint: GET /api/trips/:tripId
-- Request Headers:
-  - Authorization: <JWT_TOKEN>
+- **Endpoint:** `GET /api/trips/:tripId`
+- **Request Headers:**
+  - `Authorization`: `<JWT_TOKEN>`
 
 ### Get All The Requested Trips For a Logged In User
 
 Retrieve all trips that are requested to join by a user .
 
-- Endpoint: GET /api/trips/my-requested-trips
-- Request Headers:
-  - Authorization: <JWT_TOKEN>
+- **Endpoint:** `GET /api/trips/my-requested-trips`
+- **Request Headers:**
+  - `Authorization`: `<JWT_TOKEN>`
 
 ### Get All The Trips Created By A User
 
 Retrieve all trips that are posted/created by a user .
 
-- Endpoint: GET /api/trips/my-posted-trips
-- Request Headers:
-  - Authorization: <JWT_TOKEN>
+- **Endpoint:** `GET /api/trips/my-posted-trips`
+- **Request Headers:**
+  - `Authorization`: `<JWT_TOKEN>`
 
 ### Send Travel Buddy Request
 
 Send a travel buddy request for a specific trip with the ID `tripId`.
 
-- Endpoint: POST /api/trip/:tripId/request
-- Request Headers:
-  - Authorization: <JWT_TOKEN>
-- Request Body:
+- **Endpoint:** POST /api/trip/:tripId/request
+- **Request Headers:**
+  - `Authorization`: `<JWT_TOKEN>`
+- **Request Body:**
 
-```TS
+```json
 {
-    "userId": "b9964127-2924-42bb-9970-60f93c016xyz"
+	"userId": "b9964127-2924-42bb-9970-60f93c016xyz"
 }
 ```
 
@@ -166,23 +173,23 @@ Send a travel buddy request for a specific trip with the ID `tripId`.
 
 Retrieve potential travel buddies for a specific trip with the ID `:tripId`.
 
-- Endpoint: GET /api/travel-buddies/:tripId
-- Request Headers:
-  - Authorization: <JWT_TOKEN>
+- **Endpoint:** `GET /api/travel-buddies/:tripId`
+- **Request Headers:**
+  - `Authorization`: `<JWT_TOKEN>`
 
 ### Respond to Travel Buddy Request
 
-Respond to a travel buddy request with the ID `:buddyId`, updating the status of the request.
+Respond to a travel buddy request with the ID `buddyId`, updating the status of the request.
 
-- Endpoint: PUT /api/travel-buddies/:buddyId/respond
-- Request Headers:
-  - Authorization: <JWT_TOKEN>
-- Request Body:
+- **Endpoint:** `PUT /api/travel-buddies/:buddyId/respond`
+- **Request Headers:**
+  - `Authorization`: `<JWT_TOKEN>`
+- **Request Body:**
 
-```TS
+```json
 {
-    "tripId": "b9964127-2924-42bb-9970-60f93c016ghi",
-    "status": "APPROVED"
+	"tripId": "b9964127-2924-42bb-9970-60f93c016ghi",
+	"status": "APPROVED"
 }
 ```
 
@@ -190,27 +197,27 @@ Respond to a travel buddy request with the ID `:buddyId`, updating the status of
 
 Retrieve the user's profile information.
 
-- Endpoint: GET /api/profile
-- Request Headers:
-  - Authorization: <JWT_TOKEN>
+- **Endpoint:** `GET /api/profile`
+- **Request Headers:**
+  - `Authorization`: `<JWT_TOKEN>`
 
 ### Update User Profile
 
 Update the user's profile information.
 
-- Endpoint: PUT /api/profile
-- Request Headers:
-  - Authorization: <JWT_TOKEN>
-- Request Body:
+- **Endpoint:** PUT /api/profile
+- **Request Headers:**
+  - `Authorization`: `<JWT_TOKEN>`
+- **Request Body:**
 
-```TS
+```json
 {
-    "name": "John Cena",
-    "email": "john.doe@example.com",
-    "profile": {
-        "bio": "xyz",
-        "age": 30
-    }
+	"name": "John Cena",
+	"email": "john.doe@example.com",
+	"profile": {
+		"bio": "xyz",
+		"age": 30
+	}
 }
 ```
 
@@ -218,14 +225,14 @@ Update the user's profile information.
 
 Update the user's role. Only Admin or Super Admin can change user role
 
-- Endpoint: PUT /api/profile
-- Request Headers:
-  - Authorization: <JWT_TOKEN>
-- Request Body:
+- **Endpoint:** PUT /api/profile
+- **Request Headers:**
+  - `Authorization`: `<JWT_TOKEN>`
+- **Request Body:**
 
-```TS
+```json
 {
-    "role": "ADMIN"
+	"role": "ADMIN"
 }
 ```
 
