@@ -1,4 +1,4 @@
-# Travel Buddy Matching Application Backend
+# Travel Buddy Application Backend
 
 ## Overview
 
