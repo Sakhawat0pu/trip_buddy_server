@@ -1,0 +1,70 @@
+# To better understand this file read this:
+# https://docs.ionos.space/docs/github-actions-customization/
+
+name: "Deploy Now: Execute Build"
+
+on:
+  workflow_call:
+    inputs:
+      site-url:
+        required: true
+        type: string
+      branch-id:
+        required: true
+        type: string
+
+env:
+  DEPLOYMENT_FOLDER: dist
+
+jobs:
+# Please do not rename this job
+  build-project:
+    name: build trip_buddy_server
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: v22.x
+
+      - name: Build Node assets
+        env:
+          APP_PASS: mvyovadriyggvonh
+          BCRYPT_SALT_ROUNDS=: 12
+          CI: true
+          CLOUDINARY_API_KEY: 437179429399447
+          CLOUDINARY_API_SECRET: pz6DwSatGwR2YZ1AGrleB8HqE6s
+          CLOUDINARY_CLOUD_NAME: ddaamqfdd
+          EMAIL_ADDRESS: s19hossain98@gmail.com
+          FRONTEND_BASE_URI: http://localhost:3000
+          JWT_ACCESS_SECRET: 0abe816934e82b6a5988cd0c9e3d4fb46b2ee290dc788af14649e64df589908b
+          JWT_ACCESS_TOKEN_EXPIRES_IN: 30m
+          JWT_REFRESH_SECRET: f02211c33ca63b73f6ae78a17bf6efe93dc5735b6f98e464155d0f55f42ac317fcab1151f006b3d58796bf0fdd31cb15f08af9fa21cd4c1e5d0e32880097b2ff
+          JWT_REFRESH_TOKEN_EXPIRES_IN: 7d
+          NODE_ENV: development
+          PORT: 4000
+          RESET_PASSWORD_SECRET: b6f925b2401528e01020b5ac6f83c9726f7c62839889d3bfd857a36d7f83dcd0d50d7f1564beb24c85ac2f1c9f8cea60a21aaa5cc622a2f5fafa959fead87cc1
+          RESET_PASSWORD_TOKEN_EXPIRES_IN: 10m
+          SITE_URL: ${{ inputs.site-url }}
+          SUPER_ADMIN_EMAIL_ADDRESS: s19hossain98@gmail.com
+          SUPER_ADMIN_NAME: Sakhawat Hossain
+          SUPER_ADMIN_PASSWORD: supersecret
+        run: npm ci
+
+# Please do not touch the following action
+      - name: Store deployment content
+        uses: ionos-deploy-now/artifact-action@v1
+        with:
+          api-key: ${{ secrets.IONOS_API_KEY }}
+          service-host: api-us.ionos.space
+          project-id: 4e4fe5ea-4b03-4971-bdce-3c1f901089ae
+          branch-id: ${{ inputs.branch-id }}
+          version: ${{ github.sha }}
+          folder: ${{ env.DEPLOYMENT_FOLDER }}
+          config-file: .deploy-now/trip_buddy_server/config.yaml
+          action: upload
