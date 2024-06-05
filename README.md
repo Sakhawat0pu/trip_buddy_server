@@ -32,7 +32,7 @@ The backend of the Travel Buddy Matching Application is built using the followin
 3. Install dependencies using `npm install`.
 4. Add a .env file in the root directory with following environment variables
 
-```TS
+```ts
 DATABASE_URL=
 PORT=4000
 NODE_ENV=development

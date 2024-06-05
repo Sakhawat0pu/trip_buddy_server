@@ -17,10 +17,12 @@ const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
 const http_status_1 = __importDefault(require("http-status"));
 const sendRequest_services_1 = require("./sendRequest.services");
+// Controller function for sending a travel request
 const sendTravelRequest = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
     const tripId = req.params.tripId;
-    const result = yield sendRequest_services_1.sendRequestServices.sendTravelRequest(req.body, user, tripId);
+    // Call the service function to send the travel request
+    const result = yield sendRequest_services_1.sendRequestServices.sendTravelRequest(user, tripId, req.body);
     (0, sendResponse_1.default)(res, {
         success: true,
         statusCode: http_status_1.default.CREATED,

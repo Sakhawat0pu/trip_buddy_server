@@ -14,22 +14,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const app_1 = __importDefault(require("./app"));
 const config_1 = __importDefault(require("./app/config"));
+// Declare a variable to hold the server instance
 let server;
+// Define an asynchronous function named main to start the server
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            // Start the server and listen on the specified port
             server = app_1.default.listen(config_1.default.port, () => {
                 console.log(`Listening on port ${config_1.default.port}`);
             });
         }
         catch (err) {
+            // Handle any errors that occur during server startup
             console.log(err);
         }
     });
 }
 main();
+// Handle unhandled promise rejections
 process.on("unhandledRejection", () => {
     console.log("Unhandled Rejection detected. The server is closing...");
+    // Close the server gracefully and exit the process
     if (server) {
         server.close(() => {
             process.exit(1);
@@ -37,7 +43,9 @@ process.on("unhandledRejection", () => {
     }
     process.exit(1);
 });
+// Handle uncaught exceptions
 process.on("uncaughtException", () => {
     console.log("Uncaught Exception detected. The server is closing...");
+    // Exit the process
     process.exit(1);
 });

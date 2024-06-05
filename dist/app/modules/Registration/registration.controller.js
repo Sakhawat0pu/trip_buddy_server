@@ -17,7 +17,9 @@ const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const registration_services_1 = require("./registration.services");
 const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
 const http_status_1 = __importDefault(require("http-status"));
+// Controller function for registering a user
 const registerUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // Call the registration service function to register the user into the database
     const result = yield registration_services_1.registrationServices.registerUserIntoDb(req.body);
     (0, sendResponse_1.default)(res, {
         success: true,

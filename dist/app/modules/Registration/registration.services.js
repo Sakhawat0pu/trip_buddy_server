@@ -16,15 +16,21 @@ exports.registrationServices = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const config_1 = __importDefault(require("../../config"));
 const prisma_1 = __importDefault(require("../../shared/prisma"));
+const client_1 = require("@prisma/client");
+// Service function for registering a user into the database
 const registerUserIntoDb = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    // Hash the user's password
     const hashedPassword = yield bcrypt_1.default.hash(payload === null || payload === void 0 ? void 0 : payload.password, Number(config_1.default.bcrypt_salt_round));
     const userData = {
         name: payload.name,
         email: payload.email,
+        role: (payload === null || payload === void 0 ? void 0 : payload.role) || client_1.UserRole.TRAVELER,
         password: hashedPassword,
     };
+    // Perform a transaction to create user and user profile records atomically
     const result = yield prisma_1.default.$transaction((client) => __awaiter(void 0, void 0, void 0, function* () {
         var _a, _b;
+        // Create user record
         const createdUserData = yield client.user.create({
             data: userData,
             select: {
@@ -35,6 +41,7 @@ const registerUserIntoDb = (payload) => __awaiter(void 0, void 0, void 0, functi
                 updatedAt: true,
             },
         });
+        // Create user profile record if profile data is provided
         yield client.userProfile.create({
             data: {
                 userId: createdUserData.id,

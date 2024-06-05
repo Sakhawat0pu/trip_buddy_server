@@ -17,6 +17,7 @@ const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const tripBuddy_services_1 = require("./tripBuddy.services");
 const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
 const http_status_1 = __importDefault(require("http-status"));
+// Controller function to get potential travel buddies for a trip
 const getTravelBuddiesForATrip = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const tripId = req.params.tripId;
     const result = yield tripBuddy_services_1.tripBuddiesServices.getTravelBuddiesForATripFromDb(tripId);
@@ -27,9 +28,11 @@ const getTravelBuddiesForATrip = (0, catchAsync_1.default)((req, res) => __await
         data: result,
     });
 }));
+// Controller function to respond to a travel buddy request
 const respondTravelBuddyRequest = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const buddyId = req.params.buddyId;
     const user = req.user;
+    // Call service function to respond to the travel buddy request
     const result = yield tripBuddy_services_1.tripBuddiesServices.respondTravelBuddyRequest(user, buddyId, req.body);
     (0, sendResponse_1.default)(res, {
         success: true,
@@ -38,7 +41,19 @@ const respondTravelBuddyRequest = (0, catchAsync_1.default)((req, res) => __awai
         data: result,
     });
 }));
+const getAllRequestToJoinMyTrips = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    // Call service function to respond to the travel buddy request
+    const result = yield tripBuddy_services_1.tripBuddiesServices.getAllRequestToJoinMyTrips(user);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: "All the requests to join my trips retrieved successfully",
+        data: result,
+    });
+}));
 exports.tripBuddiesController = {
     getTravelBuddiesForATrip,
     respondTravelBuddyRequest,
+    getAllRequestToJoinMyTrips,
 };

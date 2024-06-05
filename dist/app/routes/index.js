@@ -11,9 +11,10 @@ const trip_route_1 = require("../modules/Trip/trip.route");
 const sendRequest_route_1 = require("../modules/SendRequest/sendRequest.route");
 const tripBuddy_route_1 = require("../modules/TripBuddy/tripBuddy.route");
 const router = express_1.default.Router();
+// Define routes for each module
 const moduleRoutes = [
     {
-        path: "/profile",
+        path: "/users",
         route: userProfile_route_1.userRoutes,
     },
     {
@@ -21,7 +22,7 @@ const moduleRoutes = [
         route: registration_route_1.registrationRoutes,
     },
     {
-        path: "/login",
+        path: "/auth",
         route: auth_route_1.authRoutes,
     },
     {
@@ -37,5 +38,6 @@ const moduleRoutes = [
         route: tripBuddy_route_1.tripBuddyRoutes,
     },
 ];
+// Mount routes for each module
 moduleRoutes.forEach((rt) => router.use(rt.path, rt.route));
 exports.default = router;

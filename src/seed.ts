@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { UserRole, UserStatus } from "@prisma/client";
-import config from "../src/app/config";
-import prisma from "../src/app/shared/prisma";
+import config from "./app/config";
+import prisma from "./app/shared/prisma";
 
 const superAdminData = {
 	name: config.super_admin_name as string,

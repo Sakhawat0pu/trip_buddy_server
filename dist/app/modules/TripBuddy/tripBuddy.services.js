@@ -14,6 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.tripBuddiesServices = void 0;
 const prisma_1 = __importDefault(require("../../shared/prisma"));
+const AppError_1 = __importDefault(require("../../errors/AppError"));
+const http_status_1 = __importDefault(require("http-status"));
+// Function to retrieve travel buddies for a trip from the database
 const getTravelBuddiesForATripFromDb = (tripId) => __awaiter(void 0, void 0, void 0, function* () {
     const trip = yield prisma_1.default.trip.findUniqueOrThrow({
         where: {
@@ -47,13 +50,14 @@ const getTravelBuddiesForATripFromDb = (tripId) => __awaiter(void 0, void 0, voi
     });
     return travelBuddies;
 });
+// Function to respond to a travel buddy request
 const respondTravelBuddyRequest = (userInfo, buddyId, payload) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             id: buddyId,
         },
     });
-    const respondToTrip = yield prisma_1.default.tripBuddyRequest.findFirstOrThrow({
+    const respondToTrip = yield prisma_1.default.tripBuddyRequest.findFirst({
         where: {
             userId: buddyId,
             tripId: payload.tripId,
@@ -62,6 +66,9 @@ const respondTravelBuddyRequest = (userInfo, buddyId, payload) => __awaiter(void
             },
         },
     });
+    if (!respondToTrip) {
+        throw new AppError_1.default(http_status_1.default.NOT_FOUND, "No trip buddy request request found!");
+    }
     const result = yield prisma_1.default.tripBuddyRequest.update({
         where: {
             id: respondToTrip.id,
@@ -72,7 +79,22 @@ const respondTravelBuddyRequest = (userInfo, buddyId, payload) => __awaiter(void
     });
     return result;
 });
+const getAllRequestToJoinMyTrips = (userInfo) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prisma_1.default.tripBuddyRequest.findMany({
+        where: {
+            trip: {
+                userId: userInfo.id,
+            },
+        },
+        include: {
+            user: true,
+            trip: true,
+        },
+    });
+    return result;
+});
 exports.tripBuddiesServices = {
     getTravelBuddiesForATripFromDb,
     respondTravelBuddyRequest,
+    getAllRequestToJoinMyTrips,
 };

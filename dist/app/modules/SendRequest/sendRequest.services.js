@@ -16,19 +16,25 @@ exports.sendRequestServices = void 0;
 const prisma_1 = __importDefault(require("../../shared/prisma"));
 const AppError_1 = __importDefault(require("../../errors/AppError"));
 const http_status_1 = __importDefault(require("http-status"));
-const sendTravelRequest = (payload, userInfo, tripId) => __awaiter(void 0, void 0, void 0, function* () {
-    const trip = yield prisma_1.default.trip.findUniqueOrThrow({
+// Service function for sending a travel request
+const sendTravelRequest = (userInfo, tripId, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    // Retrieve the trip information from the database
+    const trip = yield prisma_1.default.trip.findUnique({
         where: {
             id: tripId,
         },
     });
-    if (userInfo.id !== payload.userId) {
-        throw new AppError_1.default(http_status_1.default.FORBIDDEN, "Provided user ID does not match with logged in user's ID.");
+    if (!trip) {
+        throw new AppError_1.default(http_status_1.default.NOT_FOUND, "Specified trip not found!");
     }
+    payload.tripId = trip.id;
+    payload.userId = userInfo.id;
+    // Create a new trip buddy request in the database
     const result = yield prisma_1.default.tripBuddyRequest.create({
-        data: {
-            tripId: trip.id,
-            userId: userInfo.id,
+        data: payload,
+        include: {
+            trip: true,
+            user: true,
         },
     });
     return result;

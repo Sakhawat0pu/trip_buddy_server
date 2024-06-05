@@ -9,5 +9,6 @@ const validateRequest_1 = __importDefault(require("../../middlewares/validateReq
 const registration_validation_1 = require("./registration.validation");
 const registration_controller_1 = require("./registration.controller");
 const router = express_1.default.Router();
+// POST endpoint for user registration
 router.post("/", (0, validateRequest_1.default)(registration_validation_1.registrationValidations.registrationValidationSchema), registration_controller_1.registrationControllers.registerUser);
 exports.registrationRoutes = router;

@@ -19,9 +19,10 @@ const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const trip_constant_1 = require("./trip.constant");
 const pick_1 = __importDefault(require("../../shared/pick"));
+// Controller function for creating a new trip
 const createTrip = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = req.user;
-    const result = yield trip_services_1.tripServices.createTripIntoDb(req.body, user);
+    // Call service function to create trip
+    const result = yield trip_services_1.tripServices.createTripIntoDb(req);
     (0, sendResponse_1.default)(res, {
         success: true,
         statusCode: http_status_1.default.CREATED,
@@ -29,8 +30,11 @@ const createTrip = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
         data: result,
     });
 }));
+// Controller function for retrieving all trips
 const getAllTrips = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // Extract filterable parameters from request query
     const params = (0, pick_1.default)(req.query, trip_constant_1.filterableTripFields);
+    // Extract pagination and sorting options from request query
     const options = (0, pick_1.default)(req.query, ["page", "limit", "sortBy", "sortOrder"]);
     const result = yield trip_services_1.tripServices.getAllTripsFromDb(params, options);
     (0, sendResponse_1.default)(res, {
@@ -41,7 +45,72 @@ const getAllTrips = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
         data: result === null || result === void 0 ? void 0 : result.data,
     });
 }));
+const getSingleTrip = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = req.params.tripId;
+    const result = yield trip_services_1.tripServices.getSingleTripFromDb(id);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: "Specified trip retrieved successfully",
+        data: result,
+    });
+}));
+const getAllMyRequestedTrips = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    const options = (0, pick_1.default)(req.query, ["page", "limit", "sortBy", "sortOrder"]);
+    // Call service function to retrieve all my requested trips
+    const result = yield trip_services_1.tripServices.getAllMyRequestedTrips(user, options);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: "All requested trips retrieved successfully",
+        meta: result === null || result === void 0 ? void 0 : result.meta,
+        data: result === null || result === void 0 ? void 0 : result.data,
+    });
+}));
+const getAllMyPostedTrips = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    const options = (0, pick_1.default)(req.query, ["page", "limit", "sortBy", "sortOrder"]);
+    // Call service function to retrieve all my posted trips
+    const result = yield trip_services_1.tripServices.getAllMyPostedTrips(user, options);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: "My posted trips retrieved successfully",
+        meta: result === null || result === void 0 ? void 0 : result.meta,
+        data: result === null || result === void 0 ? void 0 : result.data,
+    });
+}));
+const getAllJoinRequestsForMyPostedTrips = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    const options = (0, pick_1.default)(req.query, ["page", "limit", "sortBy", "sortOrder"]);
+    // Call service function to retrieve all my posted trips
+    const result = yield trip_services_1.tripServices.getAllJoinRequestsForMyPostedTrips(user, options);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: "Join requests for my posted trips retrieved successfully",
+        meta: result === null || result === void 0 ? void 0 : result.meta,
+        data: result === null || result === void 0 ? void 0 : result.data,
+    });
+}));
+const deleteAPost = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = req.params.tripId;
+    // Call service function to retrieve all my posted trips
+    const result = yield trip_services_1.tripServices.deleteAPostFromDb(id);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: "Travel post deleted successfully",
+        data: result,
+    });
+}));
 exports.tripController = {
     createTrip,
     getAllTrips,
+    getSingleTrip,
+    getAllMyRequestedTrips,
+    getAllMyPostedTrips,
+    getAllJoinRequestsForMyPostedTrips,
+    deleteAPost,
 };

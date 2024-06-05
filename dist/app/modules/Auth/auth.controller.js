@@ -18,13 +18,15 @@ const http_status_1 = __importDefault(require("http-status"));
 const config_1 = __importDefault(require("../../config"));
 const auth_services_1 = require("./auth.services");
 const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
+// Controller function for logging in a user
 const loginUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield auth_services_1.authServices.loginUser(req.body);
     const { loginData, refreshToken } = result;
+    // Set the refresh token cookie in the response
     res.cookie("refreshToken", refreshToken, {
         secure: config_1.default.node_env === "production",
         httpOnly: true,
-        sameSite: "none",
+        sameSite: "strict",
         maxAge: 365 * 24 * 60 * 60 * 1000,
     });
     (0, sendResponse_1.default)(res, {
@@ -34,6 +36,7 @@ const loginUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void
         data: loginData,
     });
 }));
+// Controller function for refreshing access token
 const refreshToken = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const token = req.cookies.refreshToken;
     const result = yield auth_services_1.authServices.refreshToken(token);
@@ -44,6 +47,7 @@ const refreshToken = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
         data: result,
     });
 }));
+// Controller function for changing user password
 const changePassword = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
     const result = yield auth_services_1.authServices.changePasswordFromDb(user, req.body);
@@ -54,8 +58,29 @@ const changePassword = (0, catchAsync_1.default)((req, res) => __awaiter(void 0,
         data: result,
     });
 }));
+const forgotPassword = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield auth_services_1.authServices.forgotPassword(req.body);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Password reset email send successfully",
+        data: result,
+    });
+}));
+const resetPassword = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const token = req.headers.authorization;
+    const result = yield auth_services_1.authServices.resetPassword(token, req.body);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Password has been reset successfully",
+        data: result,
+    });
+}));
 exports.authController = {
     loginUser,
     refreshToken,
     changePassword,
+    forgotPassword,
+    resetPassword,
 };
