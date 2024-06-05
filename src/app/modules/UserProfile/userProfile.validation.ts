@@ -1,4 +1,4 @@
-import { UserRole } from "@prisma/client";
+import { UserRole, UserStatus } from "@prisma/client";
 import { z } from "zod";
 
 // Define the schema for updating user profile
@@ -24,7 +24,14 @@ const updateRoleValidationSchema = z.object({
 	}),
 });
 
+const updateStatusValidationSchema = z.object({
+	body: z.object({
+		status: z.enum([UserStatus.ACTIVE, UserStatus.BLOCKED, UserStatus.DELETED]),
+	}),
+});
+
 export const userValidations = {
 	updateProfileValidationSchema,
 	updateRoleValidationSchema,
+	updateStatusValidationSchema,
 };

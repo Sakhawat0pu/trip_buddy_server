@@ -8,7 +8,7 @@ import { UserRole } from "@prisma/client";
 const router = express.Router();
 
 router.post(
-	"/",
+	"/login",
 	validateRequest(authValidation.loginUserValidationSchema),
 	authController.loginUser
 );

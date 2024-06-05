@@ -82,7 +82,24 @@ const respondTravelBuddyRequest = async (
 	return result;
 };
 
+const getAllRequestToJoinMyTrips = async (userInfo: JwtPayload) => {
+	const result = await prisma.tripBuddyRequest.findMany({
+		where: {
+			trip: {
+				userId: userInfo.id,
+			},
+		},
+		include: {
+			user: true,
+			trip: true,
+		},
+	});
+
+	return result;
+};
+
 export const tripBuddiesServices = {
 	getTravelBuddiesForATripFromDb,
 	respondTravelBuddyRequest,
+	getAllRequestToJoinMyTrips,
 };

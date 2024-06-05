@@ -30,6 +30,38 @@ const getMeFromDb = async (userInfo: JwtPayload) => {
 	return result;
 };
 
+const getAllUsers = async () => {
+	const result = await prisma.user.findMany({
+		select: {
+			id: true,
+			name: true,
+			email: true,
+			role: true,
+			status: true,
+			userProfile: true,
+		},
+	});
+
+	return result;
+};
+
+const getSingleUser = async (userId: string) => {
+	const result = await prisma.user.findUnique({
+		where: {
+			id: userId,
+		},
+		include: {
+			userProfile: true,
+		},
+	});
+
+	if (!result) {
+		throw new AppError(httpStatus.NOT_FOUND, "Specified user not found!");
+	}
+
+	return result;
+};
+
 /**
  * Updates user profile information in the database based on the user's JWT payload and the provided payload.
  * @param userInfo The JWT payload containing user information.
@@ -123,8 +155,33 @@ const updateUserRoleIntoDb = async (
 	return userData;
 };
 
+const updateUserStatusIntoDb = async (
+	userId: string,
+	payload: { status: UserStatus }
+) => {
+	const userData = await prisma.user.update({
+		where: {
+			id: userId,
+		},
+		data: payload,
+		select: {
+			id: true,
+			name: true,
+			email: true,
+			status: true,
+			role: true,
+			userProfile: true,
+		},
+	});
+
+	return userData;
+};
+
 export const userServices = {
 	getMeFromDb,
+	getAllUsers,
+	getSingleUser,
 	updateMeIntoDb,
 	updateUserRoleIntoDb,
+	updateUserStatusIntoDb,
 };

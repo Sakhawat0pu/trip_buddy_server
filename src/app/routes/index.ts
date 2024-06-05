@@ -11,7 +11,7 @@ const router = express.Router();
 // Define routes for each module
 const moduleRoutes = [
 	{
-		path: "/profile",
+		path: "/users",
 		route: userRoutes,
 	},
 	{
@@ -19,7 +19,7 @@ const moduleRoutes = [
 		route: registrationRoutes,
 	},
 	{
-		path: "/login",
+		path: "/auth",
 		route: authRoutes,
 	},
 	{

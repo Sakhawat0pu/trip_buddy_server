@@ -34,7 +34,7 @@ The backend of the Travel Buddy Matching Application is built using the followin
 
 ```TS
 DATABASE_URL=
-PORT=6000
+PORT=4000
 NODE_ENV=development
 BCRYPT_SALT_ROUNDS=
 JWT_ACCESS_SECRET=
@@ -55,7 +55,7 @@ CLOUDINARY_API_SECRET=
 5. Set up a PostgreSQL database and configure the connection in the Prisma schema.
 6. Run database migrations using `npx prisma migrate dev`.
 7. Start the server using `npm run dev`.
-8. Access the application in your browser at `http://localhost:6000`.
+8. Access the application in your browser at `http://localhost:4000`.
 
 ## API Endpoints
 
@@ -82,7 +82,7 @@ Register a new user with the provided name, email, and password. Returns the reg
 
 Authenticate a user with the provided email and password. Returns a JWT token for further authentication.
 
-- **Endpoint:** `POST /api/login`
+- **Endpoint:** `POST /api/auth/login`
 - **Request Body:**
 
 ```json
@@ -129,6 +129,14 @@ Retrieve paginated and filtered trips based on query parameters such as destinat
 Retrieve a trip with the ID: `tripId`.
 
 - **Endpoint:** `GET /api/trips/:tripId`
+
+### Get All The Join Requests
+
+Get all the join requests for all the posts made by a user (logged in).
+
+- **Endpoint:** `GET /api/trips/join-requests`
+- **Request Headers:**
+  - `Authorization`: `<JWT_TOKEN>`
 
 ### Delete A Trip By ID
 
@@ -193,19 +201,35 @@ Respond to a travel buddy request with the ID `buddyId`, updating the status of 
 }
 ```
 
-### Get User Profile
+### Get Logged In User's Profile
 
-Retrieve the user's profile information.
+Retrieve the logged in user's profile information.
 
-- **Endpoint:** `GET /api/profile`
+- **Endpoint:** `GET /api/users/me`
 - **Request Headers:**
   - `Authorization`: `<JWT_TOKEN>`
 
-### Update User Profile
+### Get All the User's Profile Information
 
-Update the user's profile information.
+Retrieve all the user's profile information. Only Admin and Super Admin can retrieve all the user's profile information.
 
-- **Endpoint:** PUT /api/profile
+- **Endpoint:** `GET /api/users`
+- **Request Headers:**
+  - `Authorization`: `<JWT_TOKEN>`
+
+### Get A User's Profile Information By ID
+
+Retrieve a user's profile information by the ID. Only Admin and Super Admin can retrieve a specific user's profile information by his/her ID.
+
+- **Endpoint:** `GET /api/users/:userId`
+- **Request Headers:**
+  - `Authorization`: `<JWT_TOKEN>`
+
+### Update User Profile (Logged in user)
+
+Update the logged in user's profile information.
+
+- **Endpoint:** `PUT /api/users/update-me`
 - **Request Headers:**
   - `Authorization`: `<JWT_TOKEN>`
 - **Request Body:**
@@ -221,11 +245,11 @@ Update the user's profile information.
 }
 ```
 
-### Update User Role
+### Update A User Role By ID
 
-Update the user's role. Only Admin or Super Admin can change user role
+Update a user's role. Only Admin or Super Admin can change user role.
 
-- **Endpoint:** PUT /api/profile
+- **Endpoint:** `PUT /api/users/role/:userId/edit`
 - **Request Headers:**
   - `Authorization`: `<JWT_TOKEN>`
 - **Request Body:**
@@ -233,6 +257,21 @@ Update the user's role. Only Admin or Super Admin can change user role
 ```json
 {
 	"role": "ADMIN"
+}
+```
+
+### Update A User Status By ID
+
+Update a user's status. Only Admin or Super Admin can change user role.
+
+- **Endpoint:** `PUT /api/users/status/:userId"`
+- **Request Headers:**
+  - `Authorization`: `<JWT_TOKEN>`
+- **Request Body:**
+
+```json
+{
+	"status": "BLOCKED"
 }
 ```
 

@@ -14,10 +14,17 @@ router.get(
 	tripBuddiesController.getTravelBuddiesForATrip
 );
 
+// GET endpoint to get all requests to join trips posted by the logged in user
+router.get(
+	"/requests-to-join",
+	auth(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.TRAVELER),
+	tripBuddiesController.getAllRequestToJoinMyTrips
+);
+
 // PUT endpoint to respond to a travel buddy request
-router.put(
+router.patch(
 	"/:buddyId/respond",
-	auth(UserRole.TRAVELER),
+	auth(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.TRAVELER),
 	validateRequest(tripBuddyValidations.respondBuddyRequestValidationSchema),
 	tripBuddiesController.respondTravelBuddyRequest
 );

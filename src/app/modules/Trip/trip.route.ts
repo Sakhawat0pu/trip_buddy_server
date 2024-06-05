@@ -13,7 +13,7 @@ router.get("/", tripController.getAllTrips);
 
 // GET endpoint for retrieving a trip by id
 router.get(
-	"/:tripId",
+	"/:tripId/single-trip",
 	// auth(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.TRAVELER),
 	tripController.getSingleTrip
 );
@@ -21,15 +21,22 @@ router.get(
 // GET endpoint to get all the requested trip for the logged in user
 router.get(
 	"/my-requested-trips",
-	auth(UserRole.TRAVELER),
+	auth(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.TRAVELER),
 	tripController.getAllMyRequestedTrips
 );
 
 // GET endpoint to get all the posted trips for the logged in user
 router.get(
 	"/my-posted-trips",
-	auth(UserRole.TRAVELER),
+	auth(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.TRAVELER),
 	tripController.getAllMyPostedTrips
+);
+
+// GET endpoint to get all the join request for posted trips for the logged in user
+router.get(
+	"/join-requests",
+	auth(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.TRAVELER),
+	tripController.getAllJoinRequestsForMyPostedTrips
 );
 
 // POST endpoint for creating a new trip

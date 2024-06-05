@@ -13,6 +13,29 @@ const getMe = catchAsync(async (req: Request, res: Response) => {
 	sendResponse(res, {
 		success: true,
 		statusCode: httpStatus.OK,
+		message: "My profile retrieved successfully",
+		data: result,
+	});
+});
+
+// Controller function to retrieve the all the users profile
+const getAllUsers = catchAsync(async (req: Request, res: Response) => {
+	const result = await userServices.getAllUsers();
+	sendResponse(res, {
+		success: true,
+		statusCode: httpStatus.OK,
+		message: "User profiles retrieved successfully",
+		data: result,
+	});
+});
+
+// Controller function to retrieve the a user profile by ID
+const getSingleUser = catchAsync(async (req: Request, res: Response) => {
+	const id = req.params.userId;
+	const result = await userServices.getSingleUser(id);
+	sendResponse(res, {
+		success: true,
+		statusCode: httpStatus.OK,
 		message: "User profile retrieved successfully",
 		data: result,
 	});
@@ -45,8 +68,24 @@ const updateUserRole = catchAsync(async (req: Request, res: Response) => {
 	});
 });
 
+const updateUserStatus = catchAsync(async (req: Request, res: Response) => {
+	const userId = req.params.userId;
+
+	const result = await userServices.updateUserStatusIntoDb(userId, req.body);
+
+	sendResponse(res, {
+		success: true,
+		statusCode: httpStatus.OK,
+		message: "User status updated successfully",
+		data: result,
+	});
+});
+
 export const userControllers = {
 	getMe,
+	getAllUsers,
+	getSingleUser,
 	updateMe,
 	updateUserRole,
+	updateUserStatus,
 };

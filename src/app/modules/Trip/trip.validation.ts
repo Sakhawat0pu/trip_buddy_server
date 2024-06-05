@@ -4,7 +4,7 @@ const createTripValidationSchema = z.object({
 	body: z.object({
 		destination: z.string({ required_error: "Destination is required" }),
 		tripType: z.string({ required_error: "Trip type is required" }),
-		description: z.string().optional(),
+		description: z.string({ required_error: "Trip description is required" }),
 		startDate: z.string({ required_error: "Trip start date is required" }),
 		endDate: z.string({ required_error: "Trip end date is required" }),
 		budget: z.number({ required_error: "Budget is required" }),

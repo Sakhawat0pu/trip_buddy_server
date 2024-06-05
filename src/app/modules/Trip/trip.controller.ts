@@ -50,28 +50,51 @@ const getSingleTrip = catchAsync(async (req: Request, res: Response) => {
 const getAllMyRequestedTrips = catchAsync(
 	async (req: Request, res: Response) => {
 		const user = req.user;
+		const options = pick(req.query, ["page", "limit", "sortBy", "sortOrder"]);
 		// Call service function to retrieve all my requested trips
-		const result = await tripServices.getAllMyRequestedTrips(user);
+		const result = await tripServices.getAllMyRequestedTrips(user, options);
 		sendResponse(res, {
 			success: true,
 			statusCode: httpStatus.OK,
 			message: "All requested trips retrieved successfully",
-			data: result,
+			meta: result?.meta,
+			data: result?.data,
 		});
 	}
 );
 
 const getAllMyPostedTrips = catchAsync(async (req: Request, res: Response) => {
 	const user = req.user;
+	const options = pick(req.query, ["page", "limit", "sortBy", "sortOrder"]);
 	// Call service function to retrieve all my posted trips
-	const result = await tripServices.getAllMyPostedTrips(user);
+	const result = await tripServices.getAllMyPostedTrips(user, options);
 	sendResponse(res, {
 		success: true,
 		statusCode: httpStatus.OK,
 		message: "My posted trips retrieved successfully",
-		data: result,
+		meta: result?.meta,
+		data: result?.data,
 	});
 });
+
+const getAllJoinRequestsForMyPostedTrips = catchAsync(
+	async (req: Request, res: Response) => {
+		const user = req.user;
+		const options = pick(req.query, ["page", "limit", "sortBy", "sortOrder"]);
+		// Call service function to retrieve all my posted trips
+		const result = await tripServices.getAllJoinRequestsForMyPostedTrips(
+			user,
+			options
+		);
+		sendResponse(res, {
+			success: true,
+			statusCode: httpStatus.OK,
+			message: "Join requests for my posted trips retrieved successfully",
+			meta: result?.meta,
+			data: result?.data,
+		});
+	}
+);
 
 const deleteAPost = catchAsync(async (req: Request, res: Response) => {
 	const id = req.params.tripId;
@@ -91,5 +114,6 @@ export const tripController = {
 	getSingleTrip,
 	getAllMyRequestedTrips,
 	getAllMyPostedTrips,
+	getAllJoinRequestsForMyPostedTrips,
 	deleteAPost,
 };

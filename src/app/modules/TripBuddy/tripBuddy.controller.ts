@@ -39,7 +39,22 @@ const respondTravelBuddyRequest = catchAsync(
 	}
 );
 
+const getAllRequestToJoinMyTrips = catchAsync(
+	async (req: Request, res: Response) => {
+		const user = req.user;
+		// Call service function to respond to the travel buddy request
+		const result = await tripBuddiesServices.getAllRequestToJoinMyTrips(user);
+		sendResponse(res, {
+			success: true,
+			statusCode: httpStatus.OK,
+			message: "All the requests to join my trips retrieved successfully",
+			data: result,
+		});
+	}
+);
+
 export const tripBuddiesController = {
 	getTravelBuddiesForATrip,
 	respondTravelBuddyRequest,
+	getAllRequestToJoinMyTrips,
 };

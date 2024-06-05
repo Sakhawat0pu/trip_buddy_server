@@ -1,6 +1,6 @@
 import { JwtPayload } from "jsonwebtoken";
 import prisma from "../../shared/prisma";
-import { Prisma, Trip } from "@prisma/client";
+import { Prisma, RequestStatus, Trip } from "@prisma/client";
 import { TPaginationOptions } from "../../interface/pagination";
 import calculatePagination from "../../utils/calculatePagination";
 import { Request } from "express";
@@ -17,10 +17,11 @@ const createTripIntoDb = async (req: Request) => {
 	payload.userId = userInfo.id;
 	payload.photos = [];
 	if (files && files.length) {
-		files.forEach(async (file) => {
+		const uploadPromises = files.map(async (file) => {
 			const imgData: any = await uploadImageToCloudinary(file);
 			payload.photos.push(imgData.secure_url);
 		});
+		await Promise.all(uploadPromises);
 	}
 
 	// Create a new trip in the database
@@ -110,6 +111,15 @@ const getAllTripsFromDb = async (
 	// Retrieve trips from the database based on filtering, pagination, and sorting
 	const result = await prisma.trip.findMany({
 		where: whereCondition,
+		include: {
+			user: {
+				select: {
+					name: true,
+					role: true,
+					email: true,
+				},
+			},
+		},
 		skip: skip,
 		take: limit,
 		orderBy: {
@@ -139,7 +149,13 @@ const getSingleTripFromDb = async (tripId: string) => {
 			id: tripId,
 		},
 		include: {
-			user: true,
+			user: {
+				select: {
+					name: true,
+					role: true,
+					email: true,
+				},
+			},
 			tripBuddyRequest: true,
 		},
 	});
@@ -151,28 +167,172 @@ const getSingleTripFromDb = async (tripId: string) => {
 	return tripData;
 };
 
-const getAllMyRequestedTrips = async (user: JwtPayload) => {
+const getAllMyRequestedTrips = async (
+	user: JwtPayload,
+	options: TPaginationOptions
+) => {
+	const { page, limit, skip, sortBy, sortOrder } = calculatePagination(options);
 	const result = await prisma.tripBuddyRequest.findMany({
 		where: {
 			userId: user.id,
 		},
 		include: {
-			trip: true,
-			user: true,
+			trip: {
+				select: {
+					id: true,
+					userId: true,
+					destination: true,
+					tripType: true,
+					description: true,
+					photos: true,
+					startDate: true,
+					endDate: true,
+					budget: true,
+					activities: true,
+					user: true,
+				},
+			},
+			user: {
+				select: {
+					id: true,
+					name: true,
+					email: true,
+					role: true,
+				},
+			},
+		},
+		skip: skip,
+		take: limit,
+		orderBy: {
+			[sortBy]: sortOrder,
 		},
 	});
+
+	const totalDocuments = await prisma.tripBuddyRequest.count({
+		where: {
+			userId: user.id,
+		},
+	});
+
+	// Calculate total number of pages based on total documents and pagination limit
+	const totalPages = Math.ceil(totalDocuments / limit);
+
+	// Prepare pagination metadata
+	const meta = { page, limit, totalPages, totalDocuments };
+	return {
+		meta,
+		data: result,
+	};
 };
 
-const getAllMyPostedTrips = async (user: JwtPayload) => {
+const getAllMyPostedTrips = async (
+	user: JwtPayload,
+	options: TPaginationOptions
+) => {
+	const { page, limit, skip, sortBy, sortOrder } = calculatePagination(options);
 	const result = await prisma.trip.findMany({
 		where: {
 			userId: user.id,
 		},
 		include: {
-			user: true,
+			user: {
+				select: {
+					id: true,
+					name: true,
+					email: true,
+					role: true,
+				},
+			},
 			tripBuddyRequest: true,
 		},
+		skip: skip,
+		take: limit,
+		orderBy: {
+			[sortBy]: sortOrder,
+		},
 	});
+
+	const totalDocuments = await prisma.trip.count({
+		where: {
+			userId: user.id,
+		},
+	});
+
+	// Calculate total number of pages based on total documents and pagination limit
+	const totalPages = Math.ceil(totalDocuments / limit);
+
+	// Prepare pagination metadata
+	const meta = { page, limit, totalPages, totalDocuments };
+	return {
+		meta,
+		data: result,
+	};
+};
+
+const getAllJoinRequestsForMyPostedTrips = async (
+	user: JwtPayload,
+	options: TPaginationOptions
+) => {
+	const { page, limit, skip, sortBy, sortOrder } = calculatePagination(options);
+	const result = await prisma.tripBuddyRequest.findMany({
+		where: {
+			trip: {
+				user: {
+					id: user.id,
+				},
+			},
+		},
+		include: {
+			user: {
+				select: {
+					id: true,
+					name: true,
+					email: true,
+					role: true,
+				},
+			},
+			trip: {
+				select: {
+					id: true,
+					userId: true,
+					destination: true,
+					tripType: true,
+					description: true,
+					photos: true,
+					startDate: true,
+					endDate: true,
+					budget: true,
+					activities: true,
+					user: true,
+				},
+			},
+		},
+		skip: skip,
+		take: limit,
+		orderBy: {
+			[sortBy]: sortOrder,
+		},
+	});
+
+	const totalDocuments = await prisma.tripBuddyRequest.count({
+		where: {
+			trip: {
+				user: {
+					id: user.id,
+				},
+			},
+		},
+	});
+
+	// Calculate total number of pages based on total documents and pagination limit
+	const totalPages = Math.ceil(totalDocuments / limit);
+
+	// Prepare pagination metadata
+	const meta = { page, limit, totalPages, totalDocuments };
+	return {
+		meta,
+		data: result,
+	};
 };
 
 const deleteAPostFromDb = async (tripId: string) => {
@@ -213,6 +373,7 @@ const deleteAPostFromDb = async (tripId: string) => {
 export const tripServices = {
 	createTripIntoDb,
 	getAllTripsFromDb,
+	getAllJoinRequestsForMyPostedTrips,
 	getSingleTripFromDb,
 	getAllMyRequestedTrips,
 	getAllMyPostedTrips,
