@@ -16,7 +16,7 @@ app.use(express.text());
 app.use(express.urlencoded({ extended: true }));
 // Middleware to enable Cross-Origin Resource Sharing (CORS) with credentials support
 app.use(
-	cors({ origin: "https://ct-travel-buddy.netlify.app/", credentials: true })
+	cors({ origin: "https://ct-travel-buddy.netlify.app", credentials: true })
 );
 // Middleware to parse cookies from incoming requests
 app.use(cookieParser());
