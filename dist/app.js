@@ -11,13 +11,14 @@ const notFound_1 = __importDefault(require("./app/middlewares/notFound"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 // Create an instance of Express application
 const app = (0, express_1.default)();
+//http://localhost:3000
 // Middleware to parse incoming JSON and text requests
 app.use(express_1.default.json());
 app.use(express_1.default.text());
 // Middleware to parse incoming URL-encoded requests
 app.use(express_1.default.urlencoded({ extended: true }));
 // Middleware to enable Cross-Origin Resource Sharing (CORS) with credentials support
-app.use((0, cors_1.default)({ origin: "http://localhost:3000", credentials: true }));
+app.use((0, cors_1.default)({ origin: "https://ct-trip-buddy.vercel.app", credentials: true }));
 // Middleware to parse cookies from incoming requests
 app.use((0, cookie_parser_1.default)());
 app.get("/", (req, res) => {

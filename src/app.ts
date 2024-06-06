@@ -9,7 +9,7 @@ import config from "./app/config";
 // Create an instance of Express application
 const app: Application = express();
 //http://localhost:3000
-// https://ct-travel-buddy.netlify.app
+
 // Middleware to parse incoming JSON and text requests
 app.use(express.json());
 app.use(express.text());
@@ -17,7 +17,7 @@ app.use(express.text());
 app.use(express.urlencoded({ extended: true }));
 // Middleware to enable Cross-Origin Resource Sharing (CORS) with credentials support
 app.use(
-	cors({ origin: "https://ct-travel-buddy.netlify.app", credentials: true })
+	cors({ origin: "https://ct-trip-buddy.vercel.app", credentials: true })
 );
 // Middleware to parse cookies from incoming requests
 app.use(cookieParser());
