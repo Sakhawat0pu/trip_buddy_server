@@ -7,7 +7,6 @@ import cookieParser from "cookie-parser";
 
 // Create an instance of Express application
 const app: Application = express();
-//http://localhost:3000
 
 // Middleware to parse incoming JSON and text requests
 app.use(express.json());
